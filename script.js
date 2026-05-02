@@ -1,54 +1,38 @@
 function addTask() {
-    let input = document.getElementById("taskInput");
-    let task = input.value;
+  const input = document.getElementById("taskInput");
+  const taskText = input.value.trim();
 
-    if (task === "") return;
+  if (taskText === "") {
+    alert("Please enter a task");
+    return;
+  }
 
-    let li = createTaskElement(task);
-    document.getElementById("taskList").appendChild(li);
+  const li = document.createElement("li");
 
-    saveTask(task);
-    input.value = "";
-}
+  // Task text
+  const span = document.createElement("span");
+  span.innerText = taskText;
 
-function createTaskElement(task) {
-    let li = document.createElement("li");
-    li.textContent = task;
-
-    // mark complete
-    li.onclick = function () {
-        li.style.textDecoration = "line-through";
-    };
-
-    // delete button
-    let btn = document.createElement("button");
-    btn.textContent = "Delete";
-    btn.onclick = function () {
-        li.remove();
-    };
-
-    li.appendChild(btn);
-    return li;
-}
-
-function saveTask(task) {
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    tasks.push(task);
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-// load tasks when page opens
-window.onload = function () {
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    tasks.forEach(task => {
-        let li = createTaskElement(task);
-        document.getElementById("taskList").appendChild(li);
-    });
-};
-
-// add with Enter key
-document.getElementById("taskInput").addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        addTask();
+  // Toggle completed on click
+  li.addEventListener("click", function (e) {
+    if (e.target.tagName !== "BUTTON") {
+      li.classList.toggle("completed");
     }
-});
+  });
+
+  // Delete button
+  const delBtn = document.createElement("button");
+  delBtn.innerText = "Delete";
+  delBtn.classList.add("delete-btn");
+
+  delBtn.onclick = function () {
+    li.remove();
+  };
+
+  li.appendChild(span);
+  li.appendChild(delBtn);
+
+  document.getElementById("taskList").appendChild(li);
+
+  input.value = "";
+}
